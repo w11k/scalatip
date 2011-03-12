@@ -16,8 +16,8 @@
 package org.scalatip
 package lib
 
-case class ScalaTip(user: String, date: String, message: String) {
-  require(user != null, "user must not be null!")
-  require(date != null, "date must not be null!")
-  require(message != null, "message must not be null!")
+object Configuration {
+
+  val scalaTipRepository: ScalaTipRepository =
+    new OnlineScalaTipRepository
 }

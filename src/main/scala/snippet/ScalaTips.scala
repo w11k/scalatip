@@ -14,10 +14,24 @@
  * limitations under the License.
  */
 package org.scalatip
-package lib
+package snippet
 
-case class ScalaTip(user: String, date: String, message: String) {
-  require(user != null, "user must not be null!")
-  require(date != null, "date must not be null!")
-  require(message != null, "message must not be null!")
+import lib.Configuration.scalaTipRepository
+import lib.ScalaTip
+import net.liftweb.util.BindHelpers
+import net.liftweb.util.ClearClearable
+import scala.xml.Unparsed
+
+object ScalaTips {
+
+  def render = {
+    import BindHelpers._
+    def renderScalaTip(scalaTip: ScalaTip) = {
+      ".user *" #> Unparsed(scalaTip.user) &
+      ".date *" #> Unparsed(scalaTip.date) &
+      ".message *" #> Unparsed(scalaTip.message)
+    }
+    ".tip" #> (scalaTipRepository.findAll map renderScalaTip) &
+        ClearClearable
+  }
 }

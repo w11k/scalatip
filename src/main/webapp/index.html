@@ -3,11 +3,39 @@
 <html>
 
   <head>
-    <title>ScalaTip</title>
+    <link rel="stylesheet" type="text/css" href="css/scalatip.css"/>
+    <title>Scala Tip of the Day</title>
   </head>
 
   <body>
-    <h2>ScalaTip</h2>
+    <div id="topArea">
+      Scala Tip of the Day
+    </div>
+
+    <div id="centralArea" class="lift:ScalaTips">
+      <div class="tip">
+        <div>
+          <span class="user">John Doe</span> at <span class="date">12:34</span>
+        </div>
+        <div class="message">Scala rocks!</div>
+      </div>
+      <div class="tip clearable">
+        <div>
+          <span class="user">John Doe</span> at <span class="date">12:34</span>
+        </div>
+        <div class="message">Scala rocks!</div>
+      </div>
+      <div class="tip clearable">
+        <div>
+          <span class="user">John Doe</span> at <span class="date">12:34</span>
+        </div>
+        <div class="message">Scala rocks!</div>
+      </div>
+    </div>
+
+    <div id="bottomArea">
+      This service is brought to you by <a href="http://weiglewilczek.com">WeigleWilczek</a>.
+    </div>
   </body>
 
 </html>

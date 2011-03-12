@@ -19,16 +19,26 @@ package lib
 import dispatch.Http
 import dispatch.json.JsObject
 import dispatch.twitter.Search
+import net.liftweb.common.Loggable
 import scala.collection.immutable.Seq
 
-class OnlineScalaTipRepository extends ScalaTipRepository {
+object OnlineScalaTipRepository {
+
+  private val Date = """\w{3},\s(.*):\d{2}\s\+0000""".r
+}
+
+class OnlineScalaTipRepository extends ScalaTipRepository with Loggable {
+  import OnlineScalaTipRepository._
 
   override def findAll: Seq[ScalaTip] = {
     def scalaTip(obj: JsObject) = {
       val Search.from_user(user) = obj
-      val Search.created_at(time) = obj
+      val Search.created_at(dateString) = obj
       val Search.text(message) = obj
-      ScalaTip(user, time, message)
+      val Date(date) = dateString
+      val scalaTip = ScalaTip(user, date, message)
+      logger.debug(scalaTip)
+      scalaTip
     }
     import dispatch.Http._
     Http(Search("#Scala tip of the day -RT") lang "en") map scalaTip

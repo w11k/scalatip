@@ -1,0 +1,54 @@
+a {
+  color: #9b1d23;
+  text-decoration: none;
+}
+
+body {
+  margin-top: 2em;
+  margin-left: auto;
+  margin-right: auto;
+  width: 960px;
+}
+
+div {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+#topArea {
+  background-color: #9b1d23;
+  color: white;
+  font-size: 2em;
+  font-weight: bold;
+  padding: 1em;
+  text-align: center;
+}
+
+#bottomArea {
+  border-top: solid 1px black;
+  padding: 1em;
+  text-align: center;
+}
+
+#centralArea {
+  margin: 2em 0em 2em 0em;
+}
+
+#centralArea > div:nth-child(odd) {
+  background-color: #d3d3d3;
+}
+
+.tip {
+  padding: 0.5em 0.2em 0.5em 0.2em;
+}
+
+.user {
+  font-weight: bold;
+}
+
+.date {
+  font-style: italic;
+}
+
+.message {
+  margin-top: 0.2em;
+}
