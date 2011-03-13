@@ -17,6 +17,7 @@ package org.scalatip
 package lib
 
 import akka.actor.Actor
+import com.mongodb.casbah.Imports._ // TODO No wildcards here!
 import dispatch.Http
 import dispatch.json.JsObject
 import dispatch.twitter.Search
@@ -31,10 +32,26 @@ object ScalaTipsActor {
   case object GetAllScalaTips extends ScalaTipsMessages
 
   private val Date = """\w{3},\s(.*):\d{2}\s\+0000""".r
+
+  private val SearchScalaTips = Search("#Scala tip of the day -RT") lang "en"
 }
 
 class ScalaTipsActor extends Actor {
   import ScalaTipsActor._
+
+  override def preStart = {
+    log.debug("About to start ...")
+    persistentScalaTips = MongoConnection()("scalaTipsDB")("scalaTips")
+    scalaTips = {
+      val scalaTips =
+        for {
+          obj <- persistentScalaTips
+          scalaTip <- ScalaTip fromMongoDBObject obj
+        } yield scalaTip
+      Seq(scalaTips.toSeq: _*) // Make it immutable!
+    }
+    log.info("Loaded %s persistent Scala tips." format scalaTips.size)
+  }
 
   override protected def receive = {
     case LookupScalaTips => lookupScalaTips()
@@ -43,23 +60,33 @@ class ScalaTipsActor extends Actor {
 
   private var scalaTips: Seq[ScalaTip] = Nil
 
+  private var persistentScalaTips: MongoCollection = _
+
   private def lookupScalaTips() {
     log.debug("About to lookup Scala tips ...")
 
-    val scalaTips = {
+    val newScalaTips = {
       def scalaTip(obj: JsObject) = {
         val Search.from_user(user) = obj
         val Search.created_at(dateString) = obj
         val Search.text(message) = obj
         val Date(date) = dateString
         val scalaTip = ScalaTip(user, date, message)
-        log.debug("Found " + scalaTip.toString)
+        log.debug("Found: " + scalaTip.toString)
         scalaTip
       }
-      import Http._
-      Http(Search("#Scala tip of the day -RT") lang "en") map scalaTip
+      val newScalaTips = {
+        import Http._
+        Http(SearchScalaTips) map scalaTip filter { scalaTip => !(scalaTips contains scalaTip) }
+      }
+      log.info("Found %s new scala tips." format newScalaTips.size)
+      newScalaTips
     }
 
-    this.scalaTips ++= scalaTips filter { scalaTip => !(this.scalaTips contains scalaTip) }
+    for (newScalaTip <- newScalaTips) {
+      persistentScalaTips += newScalaTip
+      log.info("Persisted new scala tip: " + newScalaTip)
+    }
+    scalaTips ++= newScalaTips
   }
 }

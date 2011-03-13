@@ -16,6 +16,31 @@
 package org.scalatip
 package lib
 
+import com.mongodb.casbah.Imports.DBObject
+import com.mongodb.casbah.commons.MongoDBObject
+
+object ScalaTip {
+
+  def fromMongoDBObject(obj: MongoDBObject): Option[ScalaTip] =
+    for {
+      user <- obj.getAs[String](User)
+      date <- obj.getAs[String](Date)
+      message <- obj.getAs[String](Message)
+    } yield ScalaTip(user, date, message)
+
+  implicit val mongoFormat: ScalaTip => DBObject =
+    scalaTip => {
+      import scalaTip._
+      MongoDBObject(User -> user, Date -> date, Message -> message)
+    }
+
+  private[lib] val User = "user"
+
+  private[lib] val Date = "date"
+
+  private[lib] val Message = "message"
+}
+
 case class ScalaTip(user: String, date: String, message: String) {
   require(user != null, "user must not be null!")
   require(date != null, "date must not be null!")

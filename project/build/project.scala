@@ -11,6 +11,7 @@ class Project(info: ProjectInfo) extends DefaultWebProject(info) with AkkaProjec
   val liftUtil = "net.liftweb" %% "lift-util" % "2.2" withSources // Just for the sources!
   val databinder = "net.databinder" %% "dispatch-twitter" % "0.7.8" withSources
   val logback = "ch.qos.logback" % "logback-classic" % "0.9.28"
+  val casbah = "com.mongodb.casbah" %% "casbah" % "2.0.2"
 
   // Test dependencies
   val mockito = "org.mockito" % "mockito-all" % "1.8.5" % "test"
