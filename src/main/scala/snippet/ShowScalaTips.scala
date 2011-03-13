@@ -16,13 +16,14 @@
 package org.scalatip
 package snippet
 
-import lib.Configuration.scalaTipRepository
-import lib.ScalaTip
+import akka.actor.Actor
+import lib.{ ScalaTip, ScalaTipsActor }
 import net.liftweb.util.BindHelpers
 import net.liftweb.util.ClearClearable
+import scala.collection.immutable.Seq
 import scala.xml.Unparsed
 
-object ScalaTips {
+object ShowScalaTips {
 
   def render = {
     import BindHelpers._
@@ -31,7 +32,14 @@ object ScalaTips {
       ".date *" #> Unparsed(scalaTip.date) &
       ".message *" #> Unparsed(scalaTip.message)
     }
-    ".tip" #> (scalaTipRepository.findAll map renderScalaTip) &
+    val scalaTips = {
+      import Actor._
+      import ScalaTipsActor._
+      Actor.registry.actorFor[ScalaTipsActor].headOption flatMap { scalaTipsActor =>
+        (scalaTipsActor !! GetAllScalaTips).as[Seq[ScalaTip]]
+      } getOrElse Nil
+    }
+    ".tip" #> (scalaTips map renderScalaTip) &
         ClearClearable
   }
 }

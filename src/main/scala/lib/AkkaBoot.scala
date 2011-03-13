@@ -16,8 +16,12 @@
 package org.scalatip
 package lib
 
-object Configuration {
+import ScalaTipsActor.LookupScalaTips
+import akka.actor.{ Actor, Scheduler }
+import java.util.concurrent.TimeUnit.SECONDS
 
-  val scalaTipRepository: ScalaTipRepository =
-    new OnlineScalaTipRepository
+class AkkaBoot {
+
+  val scalaTipsActor = Actor.actorOf[ScalaTipsActor].start
+  Scheduler.schedule(scalaTipsActor, LookupScalaTips, 1, 30, SECONDS)
 }

@@ -1,8 +1,10 @@
 import sbt._
 
-class Project(info: ProjectInfo) extends DefaultWebProject(info) {
+class Project(info: ProjectInfo) extends DefaultWebProject(info) with AkkaProject {
 
   // Compile dependencies
+  override val akkaActor = akkaModule("actor").withSources
+  val akkaHttp = akkaModule("http").withSources
   val liftWebkit = "net.liftweb" %% "lift-webkit" % "2.2" withSources
   val liftActor = "net.liftweb" %% "lift-actor" % "2.2" withSources // Just for the sources!
   val liftCommon = "net.liftweb" %% "lift-common" % "2.2" withSources // Just for the sources!

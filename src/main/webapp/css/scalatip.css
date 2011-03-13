@@ -4,14 +4,15 @@ a {
 }
 
 body {
-  margin-top: 2em;
+  margin-top: 4em;
   margin-left: auto;
   margin-right: auto;
-  width: 960px;
+  width: 800px;
 }
 
 div {
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 12pt;
 }
 
 #topArea {
@@ -30,15 +31,15 @@ div {
 }
 
 #centralArea {
-  margin: 2em 0em 2em 0em;
+  margin: 4em 0em 4em 0em;
 }
 
 #centralArea > div:nth-child(odd) {
-  background-color: #d3d3d3;
+  background-color: #e4e4e4;
 }
 
 .tip {
-  padding: 0.5em 0.2em 0.5em 0.2em;
+  padding: 1.5em 0.5em 1.5em 0.5em;
 }
 
 .user {
@@ -50,5 +51,5 @@ div {
 }
 
 .message {
-  margin-top: 0.2em;
+  margin-top: 0.5em;
 }
