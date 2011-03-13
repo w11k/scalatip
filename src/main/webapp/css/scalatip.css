@@ -18,10 +18,13 @@ div {
 #topArea {
   background-color: #9b1d23;
   color: white;
-  font-size: 2em;
-  font-weight: bold;
   padding: 1em;
   text-align: center;
+}
+
+#topArea div {
+  font-size: 2em;
+  font-weight: bold;
 }
 
 #bottomArea {

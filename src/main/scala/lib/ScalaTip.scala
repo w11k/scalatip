@@ -41,8 +41,11 @@ object ScalaTip {
   private[lib] val Message = "message"
 }
 
-case class ScalaTip(user: String, date: String, message: String) {
+case class ScalaTip(user: String, date: String, message: String) extends Ordered[ScalaTip] {
   require(user != null, "user must not be null!")
   require(date != null, "date must not be null!")
   require(message != null, "message must not be null!")
+
+  override def compare(that: ScalaTip): Int =
+    this.date compareTo that.date
 }

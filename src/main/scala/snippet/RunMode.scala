@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 package org.scalatip
-package lib
+package snippet
 
-import org.specs.Specification
-import scala.collection.immutable.Seq
+import net.liftweb.util.Props
+import scala.xml.{ NodeSeq, Text }
 
-class OnlineScalaTipRepositorySpec extends Specification {
+class RunMode {
 
-  "An OnlineScalaTipRepository" should {
-    "return some search results from Twitter" in {
-      val repository = new OnlineScalaTipRepository
-      val scalaTips = repository.findAll
-      scalaTips mustNot beNull
-      scalaTips mustNot beEmpty
+  def render =
+    Props.mode match {
+      case Props.RunModes.Development => Text("Running in DEVELOPMENT mode!")
+      case _ => NodeSeq.Empty
     }
-  }
 }

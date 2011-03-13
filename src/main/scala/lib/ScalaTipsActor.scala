@@ -17,10 +17,11 @@ package org.scalatip
 package lib
 
 import akka.actor.Actor
-import com.mongodb.casbah.Imports._ // TODO No wildcards here!
+import com.mongodb.casbah.Imports._
 import dispatch.Http
 import dispatch.json.JsObject
 import dispatch.twitter.Search
+import net.liftweb.common.Loggable
 import scala.collection.immutable.Seq
 
 object ScalaTipsActor {
@@ -36,21 +37,14 @@ object ScalaTipsActor {
   private val SearchScalaTips = Search("#Scala tip of the day -RT") lang "en"
 }
 
-class ScalaTipsActor extends Actor {
+class ScalaTipsActor extends Actor with Loggable {
   import ScalaTipsActor._
 
   override def preStart = {
-    log.debug("About to start ...")
+    logger.debug("About to start ...")
     persistentScalaTips = MongoConnection()("scalaTipsDB")("scalaTips")
-    scalaTips = {
-      val scalaTips =
-        for {
-          obj <- persistentScalaTips
-          scalaTip <- ScalaTip fromMongoDBObject obj
-        } yield scalaTip
-      Seq(scalaTips.toSeq: _*) // Make it immutable!
-    }
-    log.info("Loaded %s persistent Scala tips." format scalaTips.size)
+    updateScalaTips()
+    logger.info("Loaded %s persistent Scala tips." format scalaTips.size)
   }
 
   override protected def receive = {
@@ -63,7 +57,7 @@ class ScalaTipsActor extends Actor {
   private var persistentScalaTips: MongoCollection = _
 
   private def lookupScalaTips() {
-    log.debug("About to lookup Scala tips ...")
+    logger.debug("About to lookup Scala tips ...")
 
     val newScalaTips = {
       def scalaTip(obj: JsObject) = {
@@ -72,21 +66,32 @@ class ScalaTipsActor extends Actor {
         val Search.text(message) = obj
         val Date(date) = dateString
         val scalaTip = ScalaTip(user, date, message)
-        log.debug("Found: " + scalaTip.toString)
+        logger.debug("Found: " + scalaTip.toString)
         scalaTip
       }
       val newScalaTips = {
         import Http._
         Http(SearchScalaTips) map scalaTip filter { scalaTip => !(scalaTips contains scalaTip) }
       }
-      log.info("Found %s new scala tips." format newScalaTips.size)
+      logger.info("Found %s new scala tips." format newScalaTips.size)
       newScalaTips
     }
 
     for (newScalaTip <- newScalaTips) {
       persistentScalaTips += newScalaTip
-      log.info("Persisted new scala tip: " + newScalaTip)
+      logger.info("Persisted new scala tip: " + newScalaTip)
     }
-    scalaTips ++= newScalaTips
+    updateScalaTips()
+  }
+
+  private def updateScalaTips() {
+    scalaTips = {
+      val scalaTips =
+        for {
+          obj <- persistentScalaTips
+          scalaTip <- ScalaTip fromMongoDBObject obj
+        } yield scalaTip
+      Seq(scalaTips.toSeq sortWith { _ > _ }: _*) // Make it immutable!
+    }
   }
 }
