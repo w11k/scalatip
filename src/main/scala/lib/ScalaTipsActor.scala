@@ -18,11 +18,11 @@ package lib
 
 import akka.actor.Actor
 import com.mongodb.casbah.Imports._
-import dispatch.Http
 import dispatch.json.JsObject
 import dispatch.twitter.Search
 import net.liftweb.common.Loggable
 import scala.collection.immutable.Seq
+import dispatch.{Logger, Http}
 
 object ScalaTipsActor {
 
@@ -35,6 +35,10 @@ object ScalaTipsActor {
   private val Date = """\w{3},\s(.*):\d{2}\s\+0000""".r
 
   private val SearchScalaTips = Search("#Scala tip of the day -RT") lang "en"
+
+  private object NoOpLogger extends Logger {
+    def info(msg: String, items: Any*) {}
+  }
 }
 
 class ScalaTipsActor extends Actor with Loggable {
@@ -70,10 +74,13 @@ class ScalaTipsActor extends Actor with Loggable {
         scalaTip
       }
       val newScalaTips = {
+        val http = new Http {
+          override def make_logger = NoOpLogger
+        }
         import Http._
-        Http(SearchScalaTips) map scalaTip filter { scalaTip => !(scalaTips contains scalaTip) }
+        http(SearchScalaTips) map scalaTip filter { scalaTip => !(scalaTips contains scalaTip) }
       }
-      logger.info("Found %s new scala tips." format newScalaTips.size)
+      if (!newScalaTips.isEmpty) logger.info("Found %s new scala tips." format newScalaTips.size)
       newScalaTips
     }
 
@@ -81,7 +88,7 @@ class ScalaTipsActor extends Actor with Loggable {
       persistentScalaTips += newScalaTip
       logger.info("Persisted new scala tip: " + newScalaTip)
     }
-    updateScalaTips()
+    if (!newScalaTips.isEmpty) updateScalaTips()
   }
 
   private def updateScalaTips() {

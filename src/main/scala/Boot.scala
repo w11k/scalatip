@@ -15,13 +15,27 @@
  */
 package org.scalatip
 
+import lib.ScalaTipsActor
+import lib.ScalaTipsActor.LookupScalaTips
+import akka.actor.{ Actor, Scheduler }
+import java.util.concurrent.TimeUnit.SECONDS
 import net.liftweb.http.{ Bootable, Html5Properties, LiftRules, Req }
+import net.liftweb.common.Loggable
 
-class Boot extends Bootable {
+class Boot extends Bootable with Loggable {
 
   override def boot() {
+    logger.debug("About to boot ScalaTip ...")
+
+    // Lift stuff
     LiftRules addToPackages getClass.getPackage
     LiftRules.early.append { _ setCharacterEncoding "UTF-8" }
     LiftRules.htmlProperties.default.set { req: Req => new Html5Properties(req.userAgent) }
+
+    // Akka stuff
+    val scalaTipsActor = Actor.actorOf[ScalaTipsActor].start
+    Scheduler.schedule(scalaTipsActor, LookupScalaTips, 1, 30, SECONDS)
+
+    logger.debug("Successfully booted ScalaTip. Have fun!")
   }
 }

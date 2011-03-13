@@ -17,13 +17,9 @@
     <appender-ref ref="file" />
   </logger>
 
-  <logger name="lift" level="info" additivity="false">
-    <appender-ref ref="console" />
-    <appender-ref ref="file" />
-  </logger>
-
   <root level="warn">
     <appender-ref ref="console"/>
+    <appender-ref ref="file"/>
   </root>
 
 </configuration>
