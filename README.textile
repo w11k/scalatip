@@ -2,6 +2,6 @@ h1. ScalaTip
 
 "ScalaTip":http://scalatip.org/ is a web application collecting, persisting and showing tweets containing "#Scala Tip of the Day". It is also a simple demo for lots of awesome Scala libraries like "Akka":http://akka.io/, "Lift":http://liftweb.net/, "Casbah":http://api.mongodb.org/scala/casbah/ (for MongoDB), etc. playing nicely together.
 
-Currently ScalaTip uses Akka 1.1-SNAPSHOT which isn't available from a public repository. Therefore, I you want to build it yourself, you first have to build Akka (the akka-actor module is sufficient) and publish it to your local repository.
+Currently ScalaTip uses Akka 1.1-SNAPSHOT which isn't available from a public repository. Therefore, If you want to build it yourself, you first have to build Akka (the akka-actor module is sufficient) and publish it to your local repository.
 
 ScalaTips is open source software licensed under the "Apache 2.0 License":http://www.apache.org/licenses/LICENSE-2.0.html. If you are interested in the code, just use it!
