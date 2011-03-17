@@ -12,7 +12,7 @@ class Project(info: ProjectInfo) extends DefaultWebProject(info) with AkkaProjec
   val dispatchTwitter = "net.databinder" %% "dispatch-twitter" % "0.7.8" withSources
   val dispatchHTTP = "net.databinder" %% "dispatch-http" % "0.7.8" withSources // Just for the sources!
   val logback = "ch.qos.logback" % "logback-classic" % "0.9.28"
-  val casbah = "com.mongodb.casbah" %% "casbah" % "2.0.2"
+  val casbah = "com.mongodb.casbah" %% "casbah" % "2.1.0"
   val jclOverSlf4j = "org.slf4j" % "jcl-over-slf4j" % "1.6.1"
 
   // Test dependencies
